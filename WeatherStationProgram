@@ -1,0 +1,35 @@
+import core.data.*; 
+import static javax.swing.JOptionPane.*;
+
+String state = "CA";
+
+
+//String state = showInputDialog("Type in a state name...");
+//if (state != null) {  // only when the user presses the 'ok' button
+//    // display the results
+//}
+
+void setup() {
+  size(1000,1000);
+  DataSource.initializeProcessing(this);
+  //DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/KATL.xml");
+  //ds.load();
+  //float temp = ds.fetchFloat("temp_f");
+  //System.out.println("Temperature: " + temp);
+}
+
+void draw(){
+  String id1 = "KATL";
+  DataSource ds1 = DataSource.connect("http://weather.gov/xml/current_obs/" + id1 + ".xml"); 
+  ds1.setCacheTimeout(15);  
+  ds1.load();
+  //ds1.printUsageString();//uncomment to see params
+  Observation ob1 = ds1.fetch("Observation", "weather", "temp_f", "wind_degrees");    
+  //System.out.println(id1 + ": " + ob1);
+  ob1.showInfo();
+  DataSource ds = DataSource.connect("http://weather.gov/xml/current_obs/index.xml").load();
+  WeatherStation[] allstns = ds.fetchArray("WeatherStation", "station/station_name", 
+                                         "station/station_id", "station/state",
+                                         "station/latitude", "station/longitude");
+  System.out.println("Total stations: " + allstns.length);
+}
